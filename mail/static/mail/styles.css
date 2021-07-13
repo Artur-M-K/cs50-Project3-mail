@@ -1,3 +1,254 @@
-textarea {
-    min-height: 400px;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500&display=swap');
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
+
+body {
+    background-color: #FFDA2F;
+}
+
+.container {
+    min-width: 100vw;
+    overflow: hidden;
+}
+
+textarea {
+    min-height: 260px;
+}
+/* login and register section */
+a {
+    color: #FFBF00;
+}
+
+a:hover {
+    color: black;
+    text-decoration: none;
+}
+
+i {
+    
+    font-weight: 900;
+}
+
+
+.container-sm {
+    width: 30vw;
+    height: 70vh;
+    margin: 15vh auto;
+    padding: 50px 20px;
+    background-color: white;
+    border: 1px solid #aaa;
+    border-radius: 15px;
+    box-shadow: 0px 12px 11px -8px rgba(0,0,0,0.45);
+}
+
+.container-sm h1 {
+    font-size: 2.8rem;
+    font-weight: 500;
+}
+
+.input-container {
+    height: 50px;
+    position: relative;
+    width: 100%;
+    margin-top: 30px
+  }
+
+  .input-container input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    border: 2px solid #000;
+    outline: none;
+    background: none;
+    padding: 10px;
+    border-radius: 15px;
+    font-size: 1.2em;
+  }
+
+  .input-container .placeholder {
+    position: absolute;
+    top: 0px;
+    left: 20px;
+    font-size: 1.2em;
+    line-height: 50px;
+    transition: 0.6s;
+    font-weight: 300;
+  }
+
+  .input-container input:focus {
+    outline-style: none;
+    box-shadow: 0px 12px 11px -8px rgba(0,0,0,0.45);
+    border-color: transparent;
+  }
+  
+  .input-container input:focus ~ .placeholder,
+  .input-container input:valid ~ .placeholder{
+    transform: translateX(-13px) translateY(-35px);
+    font-size: .8em;
+    
+  }
+
+  .btn {
+      margin-top: 30px;
+      padding: 12px 25px;
+      box-shadow: 0px 8px 11px -6px rgba(0,0,0,0.45);
+
+  }
+
+  .logText {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 1.2rem;
+  }
+
+  /* navbar section */
+
+  .main_container {
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      background-color: white;
+      
+  }
+
+  .navbar {
+      width: 20vw;
+      height: 100vh;
+      margin-top: 0;
+      background-color: #FFDA2F;
+  }
+
+  .header {
+      font-size: 3.8rem;
+      font-weight: 500;
+      margin: 0 auto;
+      padding: 0;
+      /* color: white; */
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: flex-start;
+    margin-bottom: 15vh;
+    width: 90%;
+    height: 60%;
+    /* border: 1px solid black; */
+    border-radius: 10px;
+    background-color: #777;
+  }
+
+  .nav a {
+      margin-top: auto;
+      margin-bottom: 0;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+  }
+
+  #compose {
+      width: 100%;
+      margin-top: 0;
+      position: relative;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+  }
+  .fa-plus-circle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translate(-10px, -10px);
+      font-size: 65px;
+      padding: 5px;
+      background-color: #343a40;
+      border-radius: 50%;
+      transition: background-color .15s;
+  }
+
+  #compose:hover .fa-plus-circle {
+      background-color: #23272b;
+  }
+
+  #inbox, #sent, #archived {
+      width: 90%;
+      margin: 20px auto 0;
+  }
+
+  /* main secttion */
+
+  .main {
+      width: 100%;
+      height: 100vh;
+      background-color: white;
+      margin: 0;
+      padding: 40px 60px;
+  }
+
+  .main h2 {
+      font-size: 22px;
+      
+      font-weight: 300;
+  }
+  #emailsHeader {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 20px;
+  }
+
+  #emails-view h4 {
+      font-weight: 300;
+  }
+
+  #viewMail {
+    max-height: 70vh;
+    padding: 20px 30px;
+    border: 2px solid #ddd;
+    overflow-y: auto;
+  }
+
+  #emailsContent li {
+      margin: 8px auto;
+      padding: 5px 10px;
+      list-style: none;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      transition: .15s;
+  }
+
+  #emailsContent .isReaded {
+      background-color: #ddd;
+  }
+
+  #emailsContent li:hover {
+    /* border: 1px solid #000; */
+    box-shadow: 0px 3px 9px -4px rgba(0,0,0,0.6);
+  }
+
+  #emailsContent li p {
+    margin: 0 40px 0 0;
+  }
+
+  .showSender {
+      font-weight: bold;
+      width: 250px;
+  }
+
+  .showSubject {
+      flex-grow: 2;
+  }
+
+  .showTime {
+      margin-right: 5px !important;
+  }

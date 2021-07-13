@@ -64,10 +64,10 @@ function showMailDetails(id) {
     fetch(`/emails/${id}`)
     .then(response => response.json())
     .then(email => {
-       
+     
         document.querySelector('#detail_sender').innerHTML = `From: ${email.sender}`;
         email.recipients.forEach(item => {
-          document.querySelector('#detail_recipient').innerHTML += `To: ${item}`;
+          document.querySelector('#detail_recipient').innerHTML += `To: ${item} `;
         });
         document.querySelector('#detail_subject').innerHTML = `Subject: ${email.subject}`;
         document.querySelector('#detail_date').innerHTML = `Date: ${email.timestamp}`;
@@ -77,26 +77,36 @@ function showMailDetails(id) {
             document.querySelector('#detail_recipient').innerHTML = '';                   
             document.querySelector('#emailDetails').style.display = 'none';
             document.querySelector('#emails-view').style.display = 'block';
+            
+            location.reload()
           })
     });
-    
+    fetch(`/emails/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+          read: true
+      })
+    })
   }
-    
   
 }
 
 function load_mailbox(mailbox) {
   document.querySelector('#emailsContent').textContent = '';
-  fetch('/emails/inbox')
-.then(response => response.json())
-.then(emails => {
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
     // Print emails
+    emailsLength = emails.length;
+    document.querySelector('h4').innerHTML = `(${emailsLength})`;
     emails.forEach(email => {
       let showMail = document.createElement('li');
-      showMail.innerHTML = `${email.sender}, ${email.subject}, ${email.timestamp}`;
+      showMail.innerHTML = `<p class="showSender">${email.sender}:</p><p class="showSubject">${email.subject}</p><p class="showTime">${email.timestamp}</p>`;
+      if(email.read) showMail.classList.add('isReaded');
       showMail.addEventListener('click', () => {
         emailId = email.id;
         console.log(email);
+        if(email.read) showMail.classList.add('isReaded');
         showMailDetails(emailId)
         
       });
