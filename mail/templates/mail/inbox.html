@@ -4,7 +4,7 @@
 {% block body %}
 <div class="container-fluid main_container">
     <div class="navbar">
-        <h1 class="header">em@il</h1>
+        <h1 class="header">.em@il</h1>
         <hr>
         <div class="nav">
             <button class="btn btn-dark" id="compose"><i class="fas fa-plus-circle"></i>Compose</button>
@@ -16,7 +16,7 @@
 
     </div>
     <div class="main">
-        <h2>You are logged as: {{ request.user.email }}</h2>
+        <h2><span>You are logged as:</span> {{ request.user.email }}</h2>
         <hr>
 
         <div id="emails-view">
@@ -31,14 +31,20 @@
         </div>
 
         <div id="emailDetails" style="display: none;">
-            <div id="header">
-                <p id="detail_sender">From:</p>
-                <p id="detail_recipient">To:</p>
-                <p id="detail_subject">Subject:</p>
-                <p id="detail_date">Date:</p>
+            <div class="text-right">
+                <button class="btn btn-dark pull-right" id="reply">Reply</button>
+                <button class="btn btn-dark pull-right" id="archive">Archive</button>
+                <button class="btn btn-dark pull-right" id="close">Close</button>
             </div>
+            <div id="header">
+                <p id="detail_sender"></p>
+                <p id="detail_recipient"></p>
+                <p id="detail_subject"></p>
+                <p id="detail_date"></p>
+            </div>
+
             <div id="mainBody"></div>
-            <button id="close">Close</button>
+
         </div>
 
 
@@ -46,16 +52,23 @@
             <h3>New Email</h3>
             <form id="compose-form">
                 <div class="form-group">
-                    From: <input disabled class="form-control" value="{{ request.user.email }}">
+                    From: <input disabled class="form-control create" value="{{ request.user.email }}">
                 </div>
                 <div class="form-group">
                     To: <input id="compose-recipients" class="form-control create">
                 </div>
                 <div class="form-group">
-                    <input class="form-control create" id="compose-subject" placeholder="Subject">
+                    Subject: <input class="form-control create" id="compose-subject" placeholder="">
                 </div>
-                <textarea class="form-control create" id="compose-body" placeholder="Body"></textarea>
-                <input type="submit" class="btn btn-primary" id="submit" />
+                <div id="textarea">
+                    Body: <div id="previousText"></div>
+                    <textarea class="form-control create" id="compose-body" placeholder=""></textarea>
+                </div>
+
+                <div class="text-right">
+                    <input type="submit" class="btn btn-dark pull-right" id="submit" />
+                </div>
+
             </form>
         </div>
     </div>
