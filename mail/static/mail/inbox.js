@@ -100,6 +100,15 @@ function showMailDetails(id) {
     fetch(`/emails/${id}`)
     .then(response => response.json())
     .then(email => {
+
+      if(!email.read){
+        fetch(`/emails/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+              read: true
+          })
+        })
+      }
         (email.archived)?document.querySelector('#archive').innerHTML = 'Remove': document.querySelector('#archive').innerHTML = 'Archive';
         document.querySelector('#detail_sender').innerHTML = `<span>From:</span> ${email.sender}`;
         document.querySelector('#detail_recipient').innerHTML = '<span>To:</span>';
@@ -113,7 +122,6 @@ function showMailDetails(id) {
         document.querySelector('#reply').addEventListener('click', () => {
           
           replyEmail(email);
-          // email = '';
         })
         document.querySelector('#archive').addEventListener('click', () => {
             if(!email.archived) {
@@ -131,16 +139,7 @@ function showMailDetails(id) {
                     archived: false
                 })
               })
-              
              
-            }
-            if(!email.read){
-              fetch(`/emails/${id}`, {
-                method: 'PUT',
-                body: JSON.stringify({
-                    read: true
-                })
-              })
             }
             
             location.reload();
