@@ -1,7 +1,8 @@
 
-const archive = document.querySelector('#archive');
+// const archive = document.querySelector('#archive');
 
 let isSend = false;
+let isInBox = null;
 
 document.addEventListener('DOMContentLoaded', function() {
   
@@ -30,16 +31,19 @@ function compose_email() {
   const emailRecipients = document.querySelector('#compose-recipients');
   const emailSubject = document.querySelector('#compose-subject');
   const emailBody = document.querySelector('#compose-body');
+
   emailRecipients.disabled = false;
   emailSubject.disabled = false;
 
   emailRecipients.value = '';
   emailSubject.value = '';
   emailBody.value = '';
+ 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display  = 'block';
   document.querySelector('#emailDetails').style.display = 'none';
+  
 
   //add eventListner for each element
   const createEmail = document.querySelectorAll('.create');
@@ -85,6 +89,13 @@ function showMailDetails(id) {
   }else {
     document.querySelector('#archive').style.display = 'inline-block';
   }
+  console.log(isInBox)
+  if(isInBox) {
+    document.querySelector('#reply').style.display = 'inline-block';
+  }else {
+    document.querySelector('#reply').style.display = 'none';
+  }
+
   if (id) {
     fetch(`/emails/${id}`)
     .then(response => response.json())
@@ -95,11 +106,14 @@ function showMailDetails(id) {
        email.recipients.forEach(item => {document.querySelector('#detail_recipient').innerHTML += ` ${item} `});
         document.querySelector('#detail_subject').innerHTML = `<span>Subject:</span> ${email.subject}`;
         document.querySelector('#detail_date').innerHTML = `<span>Date:</span> ${email.timestamp}`;
-        document.querySelector('#mainBody').innerHTML = `${email.body}`;
+        let dataBody = email.body.replace(/^/gm, "\t");
+        
+        document.querySelector('#compose-body-reply').value = `${dataBody}`;
 
         document.querySelector('#reply').addEventListener('click', () => {
+          
           replyEmail(email);
-          email = '';
+          // email = '';
         })
         document.querySelector('#archive').addEventListener('click', () => {
             if(!email.archived) {
@@ -109,8 +123,6 @@ function showMailDetails(id) {
                     archived: true
                 })
               })
-              // location.reload()
-              // load_mailbox('inbox');
               
             }else {
               fetch(`/emails/${id}`, {
@@ -119,8 +131,7 @@ function showMailDetails(id) {
                     archived: false
                 })
               })
-              // location.reload();
-              // load_mailbox('inbox');
+              
              
             }
             if(!email.read){
@@ -141,7 +152,8 @@ function showMailDetails(id) {
 
 function load_mailbox(mailbox) {
   (mailbox === 'sent') ? isSend = true : isSend = false;
-  console.log(isSend)
+  (mailbox === 'inbox') ? isInBox = true : isInBox = false;
+  
   document.querySelector('#emailsContent').innerHTML = '';
   document.querySelector('#detail_recipient').innerHTML = '';  
   
@@ -149,8 +161,6 @@ function load_mailbox(mailbox) {
   .then(response => response.json())
   .then(emails => {
     // Print emails
-    
-    console.log(emails)
     emailsLength = emails.length;
     setTimeout(() =>{document.querySelector('h4').innerHTML = `(${emailsLength})`}, 150);
     emails.forEach(email => {
@@ -158,8 +168,6 @@ function load_mailbox(mailbox) {
       showMail.innerHTML = `<p class="showSender">${email.sender}:</p><p class="showSubject">${email.subject}</p><p class="showTime">${email.timestamp}</p>`;
       if(email.read) showMail.classList.add('isReaded');
       showMail.addEventListener('click', () => {
-        console.log(email);
-        // if(email.read) showMail.classList.add('isReaded');
         showMailDetails(email.id)
         
       });
@@ -186,7 +194,7 @@ function replyEmail(data) {
   const recipients = document.querySelector('#compose-recipients');
   const subject = document.querySelector('#compose-subject');
   const bodyText = document.querySelector('#compose-body');
-  const previousText = document.querySelector('#previousText');
+  
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
   document.querySelector('#emailDetails').style.display = 'none';
@@ -195,22 +203,23 @@ function replyEmail(data) {
 
   recipients.value = '';
   bodyText.value = '';
+  subject.value = '';
   let recipientsData = data.recipients;
   
+  let dataText =`\n \n \n------ On ${data.timestamp} ${data.sender} wrote: \n \n`;
+  let dataValue =  document.querySelector('#compose-body').value;
+   dataValue = dataText +  data.body.replace(/^/gm, "\t");
   if(data) {
     for (let i = 0; i<recipientsData.length; i++) {
       document.querySelector('#compose-recipients').value += ` ${recipientsData[i]} `;
     };
 
-    subject.value = `Re: ${data.subject}`;
-    previousText.innerHTML += ` On ${data.timestamp} ${data.sender} wrote:`;
-    previousText.innerHTML += `<span>${data.body}</span>`;
+    subject.value = (data.subject.slice(0,3) === 'Re:')?`${data.subject}`:`Re: ${data.subject}`;
+    bodyText.value = dataValue;
   }
   document.getElementById('submit').addEventListener('click', (e) => {
     e.preventDefault()
-    console.log(recipients.value)
-    console.log(subject.value)
-    console.log(bodyText.value)
+
     fetch(`/emails`, {
       method: 'POST',
       body: JSON.stringify({
@@ -218,15 +227,19 @@ function replyEmail(data) {
           subject: subject.value,
           body: bodyText.value,
       })
-    })
-    .then(response => response.json())
-    .then(result => {
-        // Print result
-        console.log(result);
-    });
+  })
+  .then(response => response.json())
+.then(result => {
+    // Print result
+    console.log(result);
+});
     recipients.value =''
     subject.value =''
     bodyText.value = ''
-    // load_mailbox('inbox');
+    dataText = ''
+    dataResult = ''
+    location.reload();
+    load_mailbox('inbox');
+
 })
 }
