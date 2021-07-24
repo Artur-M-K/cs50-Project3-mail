@@ -1,8 +1,6 @@
 
-// const archive = document.querySelector('#archive');
-
-let isSend = false;
-let isInBox = null;
+let IS_SEND = false;
+let IS_IN_BOX = null;
 
 document.addEventListener('DOMContentLoaded', function() {
   
@@ -10,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#compose').addEventListener('click', () => compose_email());
 
   document.querySelector('#close').addEventListener('click', () => {
     document.querySelector('#detail_recipient').innerHTML = '';                   
@@ -26,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function compose_email() {
-     
   //set variables
   const emailRecipients = document.querySelector('#compose-recipients');
   const emailSubject = document.querySelector('#compose-subject');
@@ -35,10 +32,6 @@ function compose_email() {
   emailRecipients.disabled = false;
   emailSubject.disabled = false;
 
-  emailRecipients.value = '';
-  emailSubject.value = '';
-  emailBody.value = '';
- 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display  = 'block';
@@ -56,7 +49,7 @@ function compose_email() {
   
   document.getElementById('submit').addEventListener('click', (e) => {
     e.preventDefault();
-
+    
     fetch('/emails', {
       method: 'POST',
       body: JSON.stringify({
@@ -68,29 +61,50 @@ function compose_email() {
     .then(response => response.json())
     .then(result => {
         // Print result
-        console.log(result);
+        
+        const message = document.querySelector('.message');
+        if (result.error) {
+          message.classList.remove('alert-success');
+          message.classList.add('alert-danger');
+          message.innerHTML=(`The email was not send - ${result.error}`);
+          setTimeout(() => {
+            location.reload();
+            message.innerHTML='';
+            
+          },2000);
+        }else if (result.message){
+          emailBody.value = '';
+          message.classList.remove('alert-danger');
+          message.classList.add('alert-success');
+          message.innerHTML=(result.message);
+          setTimeout(() => {
+            location.reload();
+            message.innerHTML='';
+            
+          },2000);
+        }
     });
 
 // Clear out composition fields
       emailRecipients.value = '';
       emailSubject.value = '';
       emailBody.textContent = '';
-      load_mailbox('inbox');
+      
   })
-  
+  return false;
 }
 function showMailDetails(id) {
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#emailDetails').style.display = 'block';
  
-  if(isSend) {
+  if(IS_SEND) {
     document.querySelector('#archive').style.display = 'none';
   }else {
     document.querySelector('#archive').style.display = 'inline-block';
   }
-  console.log(isInBox)
-  if(isInBox) {
+ 
+  if(IS_IN_BOX) {
     document.querySelector('#reply').style.display = 'inline-block';
   }else {
     document.querySelector('#reply').style.display = 'none';
@@ -150,16 +164,17 @@ function showMailDetails(id) {
 }
 
 function load_mailbox(mailbox) {
-  (mailbox === 'sent') ? isSend = true : isSend = false;
-  (mailbox === 'inbox') ? isInBox = true : isInBox = false;
+  (mailbox === 'sent') ? IS_SEND = true : IS_SEND = false;
+  (mailbox === 'inbox') ? IS_IN_BOX = true : IS_IN_BOX = false;
   
-  document.querySelector('#emailsContent').innerHTML = '';
+  
   document.querySelector('#detail_recipient').innerHTML = '';  
   
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
     // Print emails
+    document.querySelector('#emailsContent').innerHTML = '';
     emailsLength = emails.length;
     setTimeout(() =>{document.querySelector('h4').innerHTML = `(${emailsLength})`}, 150);
     emails.forEach(email => {
@@ -237,7 +252,7 @@ function replyEmail(data) {
     bodyText.value = ''
     dataText = ''
     dataResult = ''
-    location.reload();
+    // location.reload();
     load_mailbox('inbox');
 
 })

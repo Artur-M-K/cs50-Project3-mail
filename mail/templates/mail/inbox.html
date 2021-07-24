@@ -11,7 +11,7 @@
             <button class="btn btn-dark" id="inbox"><i class="far fa-envelope"></i>Inbox</button>
             <button class="btn btn-dark" id="sent"><i class="far fa-paper-plane"></i>Sent</button>
             <button class="btn btn-dark" id="archived"><i class="far fa-share-square"></i>Archived</button>
-            <a class="btn btn-dark" href="{% url 'logout' %}">Log Out</a>
+            <a class="btn btn-dark logout" href="{% url 'logout' %}">Log Out</a>
         </div>
 
     </div>
@@ -49,15 +49,16 @@
 
         <div id="compose-view">
             <h3>New Email</h3>
+            <div class="message"></div>
             <form id="compose-form">
                 <div class="form-group">
                     From: <input disabled class="form-control create" value="{{ request.user.email }}">
                 </div>
                 <div class="form-group">
-                    To: <input id="compose-recipients" class="form-control create">
+                    To: <input id="compose-recipients" type="email" class="form-control create" />
                 </div>
                 <div class="form-group">
-                    Subject: <input class="form-control create" id="compose-subject" placeholder="">
+                    Subject: <input class="form-control create" type="text" id="compose-subject" placeholder="" />
                 </div>
                 <div id="textarea">
                     Body: <textarea class="form-control create" id="compose-body" placeholder=""></textarea>
