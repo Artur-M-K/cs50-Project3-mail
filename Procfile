@@ -1,1 +1,3 @@
-web: gunicorn core.wsgi --log-file -
+web: gunicorn email-harvard.wsgi:application --log-file - --log-level debug
+python manage.py collectstatic --noinput
+manage.py migrate
