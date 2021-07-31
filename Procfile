@@ -1,1 +1,1 @@
-web: gunicorn mail.wsgi --log-file -
+web: gunicorn email-harvard.wsgi:application --log-file -
