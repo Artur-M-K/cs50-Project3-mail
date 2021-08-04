@@ -3,6 +3,8 @@ CS50's Web Programming with Python and JavaScript : CS50w Project3 - email
 
 ## [LiveDEMO](https://email-harvard.herokuapp.com/)
 
+![email](https://user-images.githubusercontent.com/80982136/128236102-636a96f0-f9b1-4d7d-adbf-654b6185c216.gif)
+
 ## General info
 This is one of the Harvard Course projects - **Email app**. \
 An email client that makes API calls to send and receive emails. Front-end - Vanilla JS, Back-end - Django.
