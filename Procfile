@@ -1,3 +1,3 @@
 release: python manage.py migrate
-web: gunicorn project3.wsgi --log-file - 
+web: waitress-serve --port=8000 project3.wsgi:application
 heroku ps:scale web=1
