@@ -80,35 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 function showMailDetails(id) {
-  // Show emailDetail view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'none';
-  document.querySelector('#emailDetails').style.display = 'block';
- 
-  //display archive button if flag is true
-  ((IS_SEND) ? document.querySelector('#archive').style.display = 'none' :
-  document.querySelector('#archive').style.display = 'inline-block');
-  
- 
-  //display reply button if flag is true
-  ((IS_IN_BOX) ? document.querySelector('#reply').style.display = 'inline-block' :
-  document.querySelector('#reply').style.display = 'none');
-  
   
   if (id) {
     fetch(`/emails/${id}`)
     .then(response => response.json())
     .then(email => {
-//mark email as read
-      if(!email.read){
-        fetch(`/emails/${id}`, {
-          method: 'PUT',
-          body: JSON.stringify({
-              read: true
-          })
-        })
-      }
-    
         ((email.archived)?document.querySelector('#archive').innerHTML = 'Remove': 
         document.querySelector('#archive').innerHTML = 'Archive');
 
@@ -126,27 +102,48 @@ function showMailDetails(id) {
         document.querySelector('#reply').addEventListener('click', () => {
           replyEmail(email);
         })
-      })
-    }
-    //archive an eamil
-        document.querySelector('#archive').addEventListener('click', () => {
+    })
+  }
+  //email is read
+  fetch(`/emails/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+    read: !true && true
+    })
+    })
+    
+  // Show emailDetail view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#emailDetails').style.display = 'block';
+ 
+  //display archive button if flag is true
+  ((IS_SEND) ? document.querySelector('#archive').style.display = 'none' :
+  document.querySelector('#archive').style.display = 'inline-block');
+  
+ 
+  //display reply button if flag is true
+  ((IS_IN_BOX) ? document.querySelector('#reply').style.display = 'inline-block' :
+  document.querySelector('#reply').style.display = 'none');
 
+    //archive an email
+    
+        document.querySelector('#archive').addEventListener('click', () => {
+         const isArchived = (document.querySelector('#archive').innerHTML);
+         const isArchivedData = (isArchived === 'Archive')? true:false;
           if (id) {
-            fetch(`/emails/${id}`)
-            .then(response => response.json())
-            .then(email => {
                 fetch(`/emails/${id}`, {
                   method: 'PUT',
                   body: JSON.stringify({
-                      archived: (!email.archived)?true:false
+                      archived: isArchivedData
                   })
                 })
             location.reload();
-          })
+          // })
         }
     }); 
+  
 }
-
 function load_mailbox(mailbox) {
   //set flags
   (mailbox === 'sent') ? IS_SEND = true : IS_SEND = false;
@@ -167,7 +164,6 @@ function load_mailbox(mailbox) {
       let showMail = document.createElement('li');
       showMail.innerHTML = `<p class="showSender">${email.sender}:</p><p class="showSubject">${email.subject}</p><p class="showTime">${email.timestamp}</p>`;
       if(email.read) showMail.classList.add('isReaded');
-
       showMail.addEventListener('click', () => {
         showMailDetails(email.id)
       });
